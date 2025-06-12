@@ -134,11 +134,14 @@ class ProfileMod(Modfile):
         return checksum
     def zip_checksum_backup(self,zip_path)->str:
         sha256_hash = hashlib.sha256()
-        with open(zip_path, "rb") as f:
-            for byte_block in iter(lambda: f.read(4096), b""):
-                sha256_hash.update(byte_block)
-            checksum = sha256_hash.hexdigest()
-        f.close()
+        try:
+            with open(zip_path, "rb") as f:
+                for byte_block in iter(lambda: f.read(4096), b""):
+                    sha256_hash.update(byte_block)
+                checksum = sha256_hash.hexdigest()
+            f.close()
+        except:
+            checksum = ""
         self.log("sha256 checkSumFile:",checksum)
         return checksum
     def unzipfile(self, profile_name: str) -> bool:

@@ -31,7 +31,7 @@ class Server:
                 thread.daemon = True
                 thread.start()
             except Exception as e:
-                print("socket_run;",e)
+                self.log("socket Error:",e)
                 
     def client_socket(self,conn, addr):
         self.log(f'Connection from {addr}')
@@ -44,9 +44,8 @@ class Server:
                 if not data:
                     break
                 self.commuJson(data.decode(),myid)
-                self.log(f'Received data: {data.decode()}')
             except Exception as e:
-                print("client_socket;",e)
+                print("Error client id [",myid,"]:",e)
     def commuJson(self, data,id):
         try:
             json_data = json.loads(data)

@@ -71,7 +71,7 @@ class Headerframe (Frame):
         self.httpServer.log=self.log
         httpsMuti = threading.Thread(target=self.httpServer.start,name='httpServer',daemon=True)
         httpsMuti.start()
-        self.Syncb = Button(self,text="Sync",background="blue",fg="white") 
+        self.Syncb = Button(self,text="Sync",background="blue",fg="white",command=self.SyncData) 
         self.Syncb.pack(padx=10,pady=10,fill="both")
         self.server.profile_name = "default"
         self.server.sha256 = self.modfile.getSha256("default")

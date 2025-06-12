@@ -36,7 +36,6 @@ class MangagerProfile(ProfileMod):
         return pro,zipfile
     def doMakeFolderProfile(self,profile_name):
         a,b= self.checkProfilePathandZip(profile_name)
-        print(a,b)
         if not a:
             self.log("Fix bug:Forlder ")
             os.makedirs(self.get_profilename_path(profile_name=profile_name))
@@ -82,10 +81,9 @@ class MangagerProfile(ProfileMod):
     def donwloadFile(self, download_url: str, profile_name: str)->str:
             self.log("Download Mode ...")
             self.downloading()
+            zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
             try:
                 response = requests.get(f"http://{download_url}", stream=True)
-                zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
-                print(zip_path)
                 total_size = int(response.headers.get('content-length', 0))
                 downloaded_size = 0
                 with open(zip_path, "wb") as f:
@@ -97,8 +95,7 @@ class MangagerProfile(ProfileMod):
                             self.perCentdownload(percent)
                 f.close()
             except Exception as e:
-                print(e)
-                self.log(e)
+                self.log("Donwload Error:",e)
             self.log("Download Mode Sucessed!!")
             self.downlaoded()
             return zip_path
@@ -131,7 +128,6 @@ class MangagerProfile(ProfileMod):
         self.isProcess = False
     def perCentdownload(self,c):
         pass
-    
     def saveSha256(self,sha,profile_name):
         self.log(profile_name,":","sha256->data.json")
         with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"), "w") as data_file:

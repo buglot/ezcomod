@@ -14,7 +14,7 @@ class ClientServer:
     def connect(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((self.ip, self.port))
-        print(f"Connected to server at {self.ip}:{self.port}")
+        self.log(f"Connected to server at {self.ip}:{self.port}")
         threading.Thread(target=self.receive_loop, daemon=True).start()
 
     def send(self, data):

@@ -75,9 +75,8 @@ class Server:
     def sendallclient(self, data: str):
         for id, client in self.ClientSocket.items():
             data["id"] = id
-            json.dumps(data)
             try:
-                client.send(data.encode())
+                client.send(json.dumps(data).encode())
             except Exception as e:
                 self.log(f"Error sending data to client {id}: {e}")
                 del self.ClientSocket[id]

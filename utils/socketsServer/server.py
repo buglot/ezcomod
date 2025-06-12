@@ -55,7 +55,7 @@ class Server:
                     data = {"id":id, "type": TypeCommu.TYPE_SYNC.value, "profile_name": self.profile_name, "download_url": self.getDownloadUrl()}
                     self.ClientSocket[id].send(json.dumps(data).encode())
                 case TypeCommu.TYPE_DOWNLOADING:
-                    self.log("Downloading... client id: "+id)
+                    self.log("Downloading... client id: ",id)
                 case TypeCommu.TYPE_DOWNLOADED:
                     self.log("DOWNLOADED client id:", id)
         except json.JSONDecodeError:
@@ -67,14 +67,16 @@ class Server:
     def controller(self, type: TypeCommu):
         match type:
             case TypeCommu.TYPE_SYNC:
-                    data = {"id": id, "type": TypeCommu.TYPE_SYNC.value, "profile_name": self.profile_name, "download_url": self.getDownloadUrl(),"sha256":self.sha256}
-                    self.sendallclient(json.dumps(data))
+                    data = {"type": TypeCommu.TYPE_SYNC.value, "profile_name": self.profile_name, "download_url": self.getDownloadUrl(),"sha256":self.sha256}
+                    self.sendallclient(data)
             case TypeCommu.TYPE_PROFILE_DELETE:
-                    data = {"id": id, "type": TypeCommu.TYPE_PROFILE_DELETE.value, "profile_name": self.profile_name}
-                    self.sendallclient(json.dumps(data))
+                    data = {"type": TypeCommu.TYPE_PROFILE_DELETE.value, "profile_name": self.profile_name}
+                    self.sendallclient(data)
 
     def sendallclient(self, data: str):
         for id, client in self.ClientSocket.items():
+            data["id"] = id
+            json.dumps(data)
             try:
                 client.send(data.encode())
             except Exception as e:

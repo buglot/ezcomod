@@ -34,8 +34,10 @@ class Modfile:
        
     def deletefolder(self,path):
         if os.path.exists(path):
-            self.log("Delete Folder:",path)
-            shutil.rmtree(path)
+            if os.path.isdir(path):
+                self.log("Delete Folder:",path)
+                shutil.rmtree(path)
+                
 class ProfileMod(Modfile): 
     profile_name:list[str] = ["default",]
     data: dict = {"profile_name":[]}
@@ -143,10 +145,10 @@ class ProfileMod(Modfile):
         self.log("sha256 checkSumFile:",checksum)
         return checksum
     def unzipfile(self, profile_name: str) -> bool:
-        zip_path = os.path.join(self.get_file_path(), "profile", profile_name, f"{profile_name}.zip")
+        zip_path = os.path.join(self.get_profilename_path(profile_name), f"{profile_name}.zip")
         if not os.path.exists(zip_path):
             raise FileNotFoundError(f"Zip file does not exist: {zip_path}")
         with zipfile.ZipFile(zip_path, 'r') as zipf:
-            zipf.extractall(os.path.join(self.get_file_path(), "profile", profile_name))
+            zipf.extractall(os.path.join(self.get_file_path()))
             zipf.close()
         return True

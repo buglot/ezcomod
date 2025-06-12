@@ -26,7 +26,8 @@ class MangagerProfile(ProfileMod):
             return False
         else:
             return True
-    def checkProfilePathandZip(self,profile_name:str)->Tuple[bool,bool]:
+    def checkProfilePathandZip_Exists(self,profile_name:str)->Tuple[bool,bool]:
+
         pro = False
         zipfile = False
         if os.path.exists(self.get_profilename_path(profile_name=profile_name)):
@@ -35,7 +36,7 @@ class MangagerProfile(ProfileMod):
             zipfile=True
         return pro,zipfile
     def doMakeFolderProfile(self,profile_name):
-        a,b= self.checkProfilePathandZip(profile_name)
+        a,b= self.checkProfilePathandZip_Exists(profile_name)
         if not a:
             self.log(f"[{profile_name}]","Fix bug:Forlder ")
             os.makedirs(self.get_profilename_path(profile_name=profile_name))
@@ -143,3 +144,14 @@ class MangagerProfile(ProfileMod):
         pass
     def downlaoded(self):
         pass
+    
+    def changeModFolder(self,profile_name):
+        a,b = self.checkProfilePathandZip_Exists(profile_name=profile_name)
+        if a and b:
+            for files in os.listdir(self.get_file_path()):
+                if files != "profile" and files !="profile.json":
+                    self.deletefolder(files)
+            if self.unzipfile(profile_name=profile_name):
+                self.log("Unzip Sucessesed!!! ")
+                self.log("Now you can open The game")
+        

@@ -44,7 +44,7 @@ class Server:
             except Exception as e:
                 self.log("socket Error:",e)
                 
-    def client_socket(self,conn, addr):
+    def client_socket(self,conn:socket.socket, addr):
         self.log(f'Connection from {addr}')
         myid = self.count
         self.ClientSocket[myid] = conn
@@ -57,6 +57,9 @@ class Server:
                 self.commuJson(data.decode(),myid)
             except Exception as e:
                 print("Error client id [",myid,"]:",e)
+                self.canRun = False
+                conn:socket.socket = self.ClientSocket.pop(myid)
+                conn.close()
     def commuJson(self, data,id):
         try:
             json_data = json.loads(data)

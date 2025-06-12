@@ -115,7 +115,7 @@ class MangagerProfile(ProfileMod):
         else:
             profile_dir = self.get_profilename_path(profile_name)
             self.doMakeFolderProfile(profile_name)
-            sha=self.zip_checksum_backup(zip_path=self.get_zip_file_profile_path(profile_name))
+            sha=self.getSha256(profile_name)
             if sha != sha256:
                 self.log(f"[{profile_name}]","this Profile isn't same host!")
                 old_file =os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip")
@@ -135,10 +135,13 @@ class MangagerProfile(ProfileMod):
             json.dump({"sha256": sha}, data_file, indent=4)
         data_file.close()
     def getSha256(self,profile_name):
-        data:dict
-        with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"),"r") as f:
-            data=json.load(f)
-        f.close()
+        data:dict={}
+        if os.path.exists(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json")):
+            with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"),"r") as f:
+                data=json.load(f)
+            f.close()
+        else:
+            data={"sha256":"0"}
         return data.get("sha256")
     def get_zip_file_profile_path(self,profile_name):
         return os.path.join(self.get_profilename_path(profile_name),f"{profile_name}.zip")

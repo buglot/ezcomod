@@ -36,6 +36,7 @@ class MangagerProfile(ProfileMod):
         return pro,zipfile
     def doMakeFolderProfile(self,profile_name):
         a,b= self.checkProfilePathandZip(profile_name)
+        print(a,b)
         if not a:
             self.log("Fix bug:Forlder ")
             os.makedirs(self.get_profilename_path(profile_name=profile_name))

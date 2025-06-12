@@ -17,7 +17,7 @@ class UI:
         self.frame.pack(padx=10, pady=10)
         self.button_h = Button(self.frame, text="HeaderMod",command=self.onClick_h)
         self.button_c = Button(self.frame, text="clientSync",command=self.onClick_c)
-        self.button_s = Button(self.frame, text="Switch Profile",command=self.onClick_c)
+        self.button_s = Button(self.frame, text="Switch Profile",command=self.onClick_s)
         self.button_h.pack()
         self.button_c.pack()
         self.button_s.pack()

@@ -62,18 +62,22 @@ class MangagerProfile(ProfileMod):
     def donwloadFile(self, download_url: str, profile_name: str)->str:
             self.log("Download Mode ...")
             self.downloading()
-            response = requests.get(download_url, stream=True)
-            zip_path = os.path.join(self.get_path_profile, f"{profile_name}.zip")
-            total_size = int(response.headers.get('content-length', 0))
-            downloaded_size = 0
-            with open(zip_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        downloaded_size += len(chunk)
-                        percent = (downloaded_size / total_size) * 100 if total_size else 0
-                        self.perCentdownload(percent)
-            f.close()
+            try:
+                response = requests.get(download_url, stream=True)
+                zip_path = os.path.join(self.get_path_profile, f"{profile_name}_bak_{uuid.uuid1()}.zip")
+                total_size = int(response.headers.get('content-length', 0))
+                downloaded_size = 0
+                with open(zip_path, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                            downloaded_size += len(chunk)
+                            percent = (downloaded_size / total_size) * 100 if total_size else 0
+                            self.perCentdownload(percent)
+                f.close()
+            except Exception as e:
+                print(e)
+                self.log(e)
             self.log("Download Mode Sucessed!!")
             self.downlaoded()
             return zip_path
@@ -94,7 +98,7 @@ class MangagerProfile(ProfileMod):
             sha=self.zip_checksum_backup(zip_path=self.get_zip_file_profile_path(profile_name))
             if sha != sha256:
                 self.log("this Profile isn't same host!")
-                os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip"))
+                # os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip"))
                 self.donwloadFile(download_url, profile_name)
                 self.saveSha256(sha=sha,profile_name=profile_name)
             else:

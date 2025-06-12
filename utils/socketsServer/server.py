@@ -8,8 +8,8 @@ class Server:
     profile_name: str = "default"
     sha256:str=None
     canRun :bool = True
-    ddns:str ='localhost'
-    def __init__(self, host='localhost', port=65432):
+    ddns:str ='0.0.0.0'
+    def __init__(self, host='0.0.0.0', port=65432):
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

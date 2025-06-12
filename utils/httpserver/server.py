@@ -21,7 +21,7 @@ class FileHTTPRequestHandler(SimpleHTTPRequestHandler):
             self.send_error(404, 'File not registered')
 
 class HTTPServer:
-    def __init__(self, host='localhost', port=4000):
+    def __init__(self, host='0.0.0.0', port=4000):
         self.host = host
         self.port = port
     def log(self,*x):

@@ -84,6 +84,7 @@ class Headerframe (Frame):
         self.server.controller(type=TypeCommu.TYPE_SYNC)
     def optionmenu_callback(self,choice:str):
         self.server.setProfile(choice)
+        self.log("Change Profile:",choice)
         self.server.sha256 = self.modfile.getSha256(choice)
         self.httpServer.add_file(f"{choice}.zip",self.modfile.get_zip_file_profile_path(choice))
     def updatemod(self):
@@ -134,8 +135,9 @@ class Headerframe (Frame):
         self.options = self.modfile.get_profiles()
         self.option['menu'].delete(0, 'end')  
         for option in self.options:
-            self.option['menu'].add_command(label=option, command=_setit(self.var_select, option))
+            self.option['menu'].add_command(label=option,command=_setit(self.var_select, option, self.optionmenu_callback))
             self.var_select.set(self.options[0])
+        self.optionmenu_callback(self.var_select.get())
     def back(self):
         self.master.back()
         self.stop()

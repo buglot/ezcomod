@@ -63,8 +63,9 @@ class MangagerProfile(ProfileMod):
             self.log("Download Mode ...")
             self.downloading()
             try:
-                response = requests.get(download_url, stream=True)
-                zip_path = os.path.join(self.get_path_profile, f"{profile_name}_bak_{uuid.uuid1()}.zip")
+                response = requests.get(f"http://{download_url}", stream=True)
+                zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
+                print(zip_path)
                 total_size = int(response.headers.get('content-length', 0))
                 downloaded_size = 0
                 with open(zip_path, "wb") as f:

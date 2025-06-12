@@ -29,7 +29,7 @@ class Modfile:
         pass
     def makefolder(self,path):
         if not os.path.exists(path):
-            os.mkdir(path)
+            os.makedirs(path)
             self.log("Make Folder:",path)
        
     def deletefolder(self,path):

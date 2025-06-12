@@ -99,8 +99,11 @@ class MangagerProfile(ProfileMod):
             sha=self.zip_checksum_backup(zip_path=self.get_zip_file_profile_path(profile_name))
             if sha != sha256:
                 self.log("this Profile isn't same host!")
-                # os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip"))
-                self.donwloadFile(download_url, profile_name)
+                old_file =os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip")
+                os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), old_file)
+                new_file = self.donwloadFile(download_url, profile_name)
+                os.rename(new_file, os.path.join(profile_dir, f"{profile_name}.zip"))
+                os.remove(old_file)
                 self.saveSha256(sha=sha,profile_name=profile_name)
             else:
                 self.log("Nothing change!")

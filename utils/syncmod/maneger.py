@@ -56,7 +56,7 @@ class MangagerProfile(ProfileMod):
         th.start()
     def tryzip(self, profile_name: str):
         sha256,zip_path=self.zip_task(profile_name, "backup") 
-        if not self.checkProfileZip(sha256,profile_name):
+        if not self.checkSha256ProfileZip(sha256,profile_name):
             self.log(f"[{profile_name}]","Have Change!")
             with open(os.path.join(self.get_profilename_path(profile_name), "data.json"), "w") as f:
                 json.dump({"sha256": sha256}, f, indent=4)
@@ -68,14 +68,13 @@ class MangagerProfile(ProfileMod):
             self.log(f"[{profile_name}]","Don't Have Anything Change!")  
             os.remove(zip_path)  
             self.log(f"[{profile_name}]","Delete Backup file Sucesseed!") 
-    def checkProfileZip(self,sha256,profile_name: str) -> bool:
+    def checkSha256ProfileZip(self,sha256,profile_name: str) -> bool:
         if os.path.exists(os.path.join(self.get_profilename_path(profile_name), f"data.json")):
-            with open(os.path.join(self.get_profilename_path(profile_name), "data.json"), "r") as f:
-                data = json.load(f)
-                if data.get("sha256") == sha256:
-                    return True
-                else:
-                    return False
+            data = self.getSha256(profile_name)
+            if data == sha256:
+                return True
+            else:
+                return False
         else:
             return False
     def donwloadFile(self, download_url: str, profile_name: str)->str:
@@ -115,32 +114,25 @@ class MangagerProfile(ProfileMod):
         else:
             profile_dir = self.get_profilename_path(profile_name)
             self.doMakeFolderProfile(profile_name)
-            self.log("sand",sha256)
-            sha=self.getSha256(profile_name)
-            if sha != sha256:
+            if not self.checkSha256ProfileZip(sha256,profile_name):
                 self.log(f"[{profile_name}]","this Profile isn't same host!")
                 old_file =os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip")
                 os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), old_file)
                 new_file = self.donwloadFile(download_url, profile_name)
                 os.rename(new_file, os.path.join(profile_dir, f"{profile_name}.zip"))
                 os.remove(old_file)
-                self.saveSha256(sha=sha,profile_name=profile_name)
+                self.write_zip_checksum(self.get_zip_file_profile_path(profile_name),profile_name=profile_name)
             else:
                 self.log(f"[{profile_name}]","Nothing change!")
         self.isProcess = False
     def perCentdownload(self,c):
         pass
-    def saveSha256(self,sha,profile_name):
-        self.log(f"[{profile_name}]","sha256->data.json")
-        with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"), "w") as data_file:
-            json.dump({"sha256": sha}, data_file, indent=4)
-        data_file.close()
+    
     def getSha256(self,profile_name):
         data:dict={}
         if os.path.exists(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json")):
             with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"),"r") as f:
                 data=json.load(f)
-                self.log(data)
             f.close()
         else:
             data={"sha256":"0"}

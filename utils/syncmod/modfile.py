@@ -92,16 +92,14 @@ class ProfileMod(Modfile):
     zipfileIsFinished: bool = True
     def zip_task(self,profile_name,mode="w")->str:
             self.zipfileIsFinished: bool = False
-            
-            path_folder = os.path.join(self.get_file_path(), "profile", profile_name)
-            
+            path_folder = self.get_profilename_path(profile_name)
             zip_path = os.path.join(path_folder, f"{profile_name}.zip")
             if mode == "backup":
                 zip_path = os.path.join(path_folder, f"{profile_name}_bak_{uuid.uuid1()}.zip")
             self.log(f"[{profile_name}]","Zipping File:",profile_name,f"-> {zip_path}.zip")
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for root, dirs, files in os.walk(self.get_file_path()):
-                    if os.path.abspath(root) == os.path.abspath(os.path.join(self.get_file_path(), "profile")):
+                    if os.path.abspath(root) == os.path.abspath(self.get_path_profile()):
                         continue
                     for file in files:
                         file_path = os.path.join(root, file)
@@ -115,22 +113,22 @@ class ProfileMod(Modfile):
             if mode == "backup":
                 sumsha256=self.zip_checksum_backup(zip_path=zip_path)
             else:
-                sumsha256=self.write_zip_checksum(zip_path=zip_path,path_folder=path_folder)
+                sumsha256=self.write_zip_checksum(zip_path=zip_path,profile_name=profile_name)
             self.zipfileIsFinished: bool = True
             return sumsha256,zip_path
     def zipfileNow(self, profile_name: str):
         thread = threading.Thread(target=self.zip_task,args=(profile_name,))
         thread.start()
-    def write_zip_checksum(self,zip_path,path_folder)->str:
-        sha256_hash = hashlib.sha256()
+    def saveSha256(self,sha,profile_name):
+        self.log(f"[{profile_name}]","sha256->data.json")
+        with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"), "w") as data_file:
+            json.dump({"sha256": sha}, data_file, indent=4)
+        data_file.close()
+    def write_zip_checksum(self,zip_path,profile_name)->str:
         with open(zip_path, "rb") as f:
             checksum = self.zip_checksum_backup(zip_path)
-            data_json_path = os.path.join(path_folder, "data.json")
-            with open(data_json_path, "w") as data_file:
-                json.dump({"sha256": checksum}, data_file, indent=4)
-            data_file.close()
+            self.saveSha256(checksum,profile_name)
         f.close()
-        self.log("sha256 checkSumFile:",checksum)
         return checksum
     def zip_checksum_backup(self,zip_path)->str:
         sha256_hash = hashlib.sha256()

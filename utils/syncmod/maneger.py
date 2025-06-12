@@ -85,6 +85,7 @@ class MangagerProfile(ProfileMod):
             try:
                 response = requests.get(f"http://{download_url}", stream=True)
                 total_size = int(response.headers.get('content-length', 0))
+                self.log("ขนาดทั้งหมด:",total_size)
                 downloaded_size = 0
                 with open(zip_path, "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):

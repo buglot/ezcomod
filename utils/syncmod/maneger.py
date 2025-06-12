@@ -108,7 +108,7 @@ class MangagerProfile(ProfileMod):
             profile_dir = self.get_profilename_path(profile_name)
             self.log(f"[{profile_name}] Added Profile")
             zip_path=self.donwloadFile(download_url, profile_name)
-            sha=self.write_zip_checksum(zip_path=zip_path, path_folder=profile_dir)
+            sha=self.write_zip_checksum(zip_path=zip_path, profile_name=profile_name)
             if sha != sha256:
                 self.saveSha256(sha=sha256,profile_name=profile_name)
             os.rename(zip_path, os.path.join(profile_dir, f"{profile_name}.zip"))
@@ -154,4 +154,9 @@ class MangagerProfile(ProfileMod):
             if self.unzipfile(profile_name=profile_name):
                 self.log("Unzip Sucessesed!!! ")
                 self.log("Now you can open The game")
-        
+    def setNowProfile(self,profile_name:str):
+        if self.checkProfile(profile_name=profile_name):
+            self.nowProfile = profile_name
+    
+    def getNowProfile(self)->str:
+        return self.nowProfile

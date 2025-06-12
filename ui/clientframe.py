@@ -70,6 +70,7 @@ class ClientFrame(BaseFrame):
         self.addList(" ".join(map(str,x)))
     def doSync(self,json_data:dict):
         self.modfile.createProfileClient(json_data.get("sha256"),json_data.get("download_url"),json_data.get("profile_name"))
+        self.modfile.changeModFolder(json_data.get("profile_name"))
     def set_progress(self,percent: int|float):
         self.progress["value"] = percent
     def downloading(self):

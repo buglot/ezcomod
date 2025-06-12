@@ -37,10 +37,11 @@ class Modfile:
             if os.path.isdir(path):
                 self.log("Delete Folder:",path)
                 shutil.rmtree(path)
-                
+
 class ProfileMod(Modfile): 
     profile_name:list[str] = ["default",]
     data: dict = {"profile_name":[]}
+    nowProfile:str = "default"
     def __init__(self):
         super().__init__()
         if (not os.path.exists(os.path.join(self.get_file_path(),"profile.json")) or not os.path.exists(os.path.join(self.get_file_path(),"profile")) or not 
@@ -58,6 +59,7 @@ class ProfileMod(Modfile):
                 self.data = json.load(f)
                 f.close()
             self.profile_name = self.data["profile_name"]
+            self.nowProfile = self.data["now"]
     def get_path_profile(self) -> str:
         return os.path.join(self.get_file_path(), "profile")
     def add_profile(self, profile_name: str):
@@ -124,8 +126,10 @@ class ProfileMod(Modfile):
     def saveSha256(self,sha,profile_name):
         self.log(f"[{profile_name}]","sha256->data.json")
         with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"), "w") as data_file:
-            json.dump({"sha256": sha}, data_file, indent=4)
+            json.dump({"sha256": sha,"now":self.nowProfile}, data_file, indent=4)
         data_file.close()
+
+        
     def write_zip_checksum(self,zip_path,profile_name)->str:
         with open(zip_path, "rb") as f:
             checksum = self.zip_checksum_backup(zip_path)

@@ -98,7 +98,7 @@ class ProfileMod(Modfile):
             zip_path = os.path.join(path_folder, f"{profile_name}.zip")
             if mode == "backup":
                 zip_path = os.path.join(path_folder, f"{profile_name}_bak_{uuid.uuid1()}.zip")
-            self.log("Zipping File:",profile_name,f"-> {zip_path}.zip")
+            self.log(f"[{profile_name}]","Zipping File:",profile_name,f"-> {zip_path}.zip")
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for root, dirs, files in os.walk(self.get_file_path()):
                     if os.path.abspath(root) == os.path.abspath(os.path.join(self.get_file_path(), "profile")):
@@ -111,7 +111,7 @@ class ProfileMod(Modfile):
                             arcname = os.path.relpath(file_path, self.get_file_path())
                             zipf.write(file_path, arcname)
             zipf.close()
-            self.log("Zip File Sucessed!:",profile_name,f"{profile_name}.zip")
+            self.log(f"[{profile_name}]","Zip File Sucessed!:",profile_name,f"{profile_name}.zip")
             if mode == "backup":
                 sumsha256=self.zip_checksum_backup(zip_path=zip_path)
             else:

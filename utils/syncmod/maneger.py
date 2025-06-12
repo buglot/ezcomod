@@ -37,16 +37,16 @@ class MangagerProfile(ProfileMod):
     def doMakeFolderProfile(self,profile_name):
         a,b= self.checkProfilePathandZip(profile_name)
         if not a:
-            self.log("Fix bug:Forlder ")
+            self.log(f"[{profile_name}]","Fix bug:Forlder ")
             os.makedirs(self.get_profilename_path(profile_name=profile_name))
         if not b:
-            self.log("Fix bug:create bank zipfile")
+            self.log(f"[{profile_name}]","Fix bug:create bank zipfile")
             with open(self.get_zip_file_profile_path(profile_name),"w") as f:
                 f.write("bank file")
             f.close()
     def createProfile(self, profile_name: str):
         if not self.checkProfile(profile_name):
-            self.log("Create Profile:",profile_name)
+            self.log(f"[{profile_name}]","Create Profile:",profile_name)
             self.add_profile(profile_name)
             self.zipfileNow(profile_name)
         else:
@@ -57,17 +57,17 @@ class MangagerProfile(ProfileMod):
     def tryzip(self, profile_name: str):
         sha256,zip_path=self.zip_task(profile_name, "backup") 
         if not self.checkProfileZip(sha256,profile_name):
-            self.log("Have Change!")
+            self.log(f"[{profile_name}]","Have Change!")
             with open(os.path.join(self.get_profilename_path(profile_name), "data.json"), "w") as f:
                 json.dump({"sha256": sha256}, f, indent=4)
                 f.close()
             os.remove(os.path.join(self.get_profilename_path(profile_name), f"{profile_name}.zip"))
             os.rename(zip_path, os.path.join(self.get_profilename_path(profile_name), f"{profile_name}.zip"))  
-            self.log("Have Change file Sucesseed!")
+            self.log(f"[{profile_name}]","Have Change file Sucesseed!")
         else:
-            self.log("Don't Have Anything Change!")  
+            self.log(f"[{profile_name}]","Don't Have Anything Change!")  
             os.remove(zip_path)  
-            self.log("Delete Backup file Sucesseed!") 
+            self.log(f"[{profile_name}]","Delete Backup file Sucesseed!") 
     def checkProfileZip(self,sha256,profile_name: str) -> bool:
         if os.path.exists(os.path.join(self.get_profilename_path(profile_name), f"data.json")):
             with open(os.path.join(self.get_profilename_path(profile_name), "data.json"), "r") as f:
@@ -79,13 +79,13 @@ class MangagerProfile(ProfileMod):
         else:
             return False
     def donwloadFile(self, download_url: str, profile_name: str)->str:
-            self.log("Download Mode ...")
+            self.log(f"[{profile_name}] Download Mode ...")
             self.downloading()
             zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
             try:
                 response = requests.get(f"http://{download_url}", stream=True)
                 total_size = int(response.headers.get('content-length', 0))
-                self.log("ขนาดทั้งหมด:",total_size)
+                self.log(f"[{profile_name}] total size :",total_size)
                 downloaded_size = 0
                 with open(zip_path, "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):
@@ -94,20 +94,19 @@ class MangagerProfile(ProfileMod):
                             downloaded_size += len(chunk)
                             percent = (downloaded_size / total_size) * 100 if total_size else 0
                             self.perCentdownload(percent)
-                            self.log("Download:",percent,"%")
                 f.close()
             except Exception as e:
-                self.log("Donwload Error:",e)
-            self.log("Download Mode Sucessed!!")
+                self.log(f"[{profile_name}] Donwload Error:",e)
+            self.log(f"[{profile_name}] Download Mode Sucessed !!")
             self.downlaoded()
             return zip_path
     def createProfileClient(self, sha256, download_url, profile_name: str):
         self.isProcess = True
         if not self.checkProfile(profile_name):
-            self.log("You don't have this profile!")
+            self.log(f"[{profile_name}] You don't have this profile!")
             self.add_profile(profile_name)
             profile_dir = self.get_profilename_path(profile_name)
-            self.log("Added Profile")
+            self.log(f"[{profile_name}] Added Profile")
             zip_path=self.donwloadFile(download_url, profile_name)
             sha=self.write_zip_checksum(zip_path=zip_path, path_folder=profile_dir)
             if sha != sha256:
@@ -118,7 +117,7 @@ class MangagerProfile(ProfileMod):
             self.doMakeFolderProfile(profile_name)
             sha=self.zip_checksum_backup(zip_path=self.get_zip_file_profile_path(profile_name))
             if sha != sha256:
-                self.log("this Profile isn't same host!")
+                self.log(f"[{profile_name}]","this Profile isn't same host!")
                 old_file =os.path.join(profile_dir, f"{profile_name}_bak_{uuid.uuid1()}.zip")
                 os.rename(os.path.join(profile_dir, f"{profile_name}.zip"), old_file)
                 new_file = self.donwloadFile(download_url, profile_name)
@@ -126,12 +125,12 @@ class MangagerProfile(ProfileMod):
                 os.remove(old_file)
                 self.saveSha256(sha=sha,profile_name=profile_name)
             else:
-                self.log("Nothing change!")
+                self.log(f"[{profile_name}]","Nothing change!")
         self.isProcess = False
     def perCentdownload(self,c):
         pass
     def saveSha256(self,sha,profile_name):
-        self.log(profile_name,":","sha256->data.json")
+        self.log(f"[{profile_name}]","sha256->data.json")
         with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"), "w") as data_file:
             json.dump({"sha256": sha}, data_file, indent=4)
         data_file.close()

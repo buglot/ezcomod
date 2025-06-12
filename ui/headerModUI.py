@@ -19,7 +19,8 @@ class Headerframe (Frame):
         self.box5 = Frame(self)
         self.box5.pack(fill="x")
         Label(self.box5,text="What you DDNS?:").pack(side="left")
-        self.ddns = Entry(self.box5)
+        self.text_ddns = StringVar()
+        self.ddns = Entry(self.box5,textvariable=self.text_ddns)
         self.ddns.pack(side="left" ,fill="x",expand=True)
         Button(self.box5,text="update",command=self.save_ddns).pack(side="right")
         Label(self, text="file path:").pack()
@@ -118,7 +119,9 @@ class Headerframe (Frame):
     def startServer(self):
         self.server =Server()
         self.server.log = self.log
+        self.text_ddns.set(self.server.ddns)
         self.server.start()
+
     def log(self,*x):
         self.add_log(" ".join(map(str,x)))
     def folder_dialog(self):

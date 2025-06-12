@@ -15,7 +15,18 @@ class Server:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
-        
+        self.ddns = self.get_local_ipv4()
+    def get_local_ipv4(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # This doesn't need to reach 8.8.8.8; it's just used to determine the outbound interface
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = '127.0.0.1'
+        finally:
+            s.close()
+        return ip    
     def start(self):
         self.log(f'Server started at {self.host}:{self.port}')
         thread = threading.Thread(target=self.socket_run)

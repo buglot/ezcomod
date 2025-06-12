@@ -1,3 +1,4 @@
+from typing import  Tuple
 from utils import ProfileMod
 import threading
 import os
@@ -25,6 +26,24 @@ class MangagerProfile(ProfileMod):
             return False
         else:
             return True
+    def checkProfilePathandZip(self,profile_name:str)->Tuple[bool,bool]:
+        pro = False
+        zipfile = False
+        if os.path.exists(self.get_profilename_path(profile_name=profile_name)):
+            pro=True
+        if os.path.exists(self.get_zip_file_profile_path(profile_name)):
+            zipfile=True
+        return pro,zipfile
+    def doMakeFolderProfile(self,profile_name):
+        a,b= self.checkProfilePathandZip(profile_name)
+        if not a:
+            self.log("Fix bug:Forlder ")
+            os.makedirs(self.get_profilename_path(profile_name=profile_name))
+        if not b:
+            self.log("Fix bug:create bank zipfile")
+            with open(self.get_zip_file_profile_path(profile_name),"w") as f:
+                f.write("bank file")
+            f.close()
     def createProfile(self, profile_name: str):
         if not self.checkProfile(profile_name):
             self.log("Create Profile:",profile_name)
@@ -88,7 +107,7 @@ class MangagerProfile(ProfileMod):
             self.log("You don't have this profile!")
             self.add_profile(profile_name)
             profile_dir = self.get_profilename_path(profile_name)
-            os.mkdir(profile_dir)
+            os.makedirs(profile_dir)
             self.log("Added Profile")
             zip_path=self.donwloadFile(download_url, profile_name)
             sha=self.write_zip_checksum(zip_path=zip_path, path_folder=profile_dir)
@@ -96,6 +115,7 @@ class MangagerProfile(ProfileMod):
                 self.saveSha256(sha=sha256,profile_name=profile_name)
         else:
             profile_dir = self.get_profilename_path(profile_name)
+            self.doMakeFolderProfile(profile_name)
             sha=self.zip_checksum_backup(zip_path=self.get_zip_file_profile_path(profile_name))
             if sha != sha256:
                 self.log("this Profile isn't same host!")

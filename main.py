@@ -5,7 +5,7 @@ try:
     import requests
 except Exception as e:
     print(e)
-    os.system("pip install requests")
+    os.system(f"{os.sys.executable} -m pip install requests")
 root = BaseRoot()
 app = UI(root)
 root.mainloop()

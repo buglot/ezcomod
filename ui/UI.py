@@ -20,6 +20,7 @@ class UI:
         self.button_s = Button(self.frame, text="Switch Profile",command=self.onClick_c)
         self.button_h.pack()
         self.button_c.pack()
+        self.button_s.pack()
     def onClick_s(self):
         self.frame.pack_forget()
         self.switch = Switch(self.root)

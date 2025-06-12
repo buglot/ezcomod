@@ -65,7 +65,7 @@ class Server:
             json_data = json.loads(data)
             match TypeCommu(json_data.get("type")):
                 case TypeCommu.TYPE_SYNC:
-                    data = {"id":id, "type": TypeCommu.TYPE_SYNC.value, "profile_name": self.profile_name, "download_url": self.getDownloadUrl()}
+                    data = {"id":id, "type": TypeCommu.TYPE_SYNC.value, "profile_name": self.profile_name, "download_url": self.getDownloadUrl(),"sha256":self.sha256}
                     self.ClientSocket[id].send(json.dumps(data).encode())
                 case TypeCommu.TYPE_DOWNLOADING:
                     self.log("Downloading... client id: ",id)

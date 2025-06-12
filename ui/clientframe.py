@@ -69,7 +69,6 @@ class ClientFrame(BaseFrame):
     def log(self,*x):
         self.addList(" ".join(map(str,x)))
     def doSync(self,json_data:dict):
-        print("do")
         self.modfile.createProfileClient(json_data.get("sha256"),json_data.get("download_url"),json_data.get("profile_name"))
     def set_progress(self,percent: int|float):
         self.progress["value"] = percent

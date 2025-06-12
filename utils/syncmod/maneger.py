@@ -115,6 +115,7 @@ class MangagerProfile(ProfileMod):
         else:
             profile_dir = self.get_profilename_path(profile_name)
             self.doMakeFolderProfile(profile_name)
+            self.log("sand",sha256)
             sha=self.getSha256(profile_name)
             if sha != sha256:
                 self.log(f"[{profile_name}]","this Profile isn't same host!")
@@ -139,6 +140,7 @@ class MangagerProfile(ProfileMod):
         if os.path.exists(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json")):
             with open(os.path.join(self.get_profilename_path(profile_name=profile_name),"data.json"),"r") as f:
                 data=json.load(f)
+                self.log(data)
             f.close()
         else:
             data={"sha256":"0"}

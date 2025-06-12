@@ -93,6 +93,7 @@ class MangagerProfile(ProfileMod):
                             downloaded_size += len(chunk)
                             percent = (downloaded_size / total_size) * 100 if total_size else 0
                             self.perCentdownload(percent)
+                            self.log("Download:",percent,"%")
                 f.close()
             except Exception as e:
                 self.log("Donwload Error:",e)
@@ -105,12 +106,12 @@ class MangagerProfile(ProfileMod):
             self.log("You don't have this profile!")
             self.add_profile(profile_name)
             profile_dir = self.get_profilename_path(profile_name)
-            os.makedirs(profile_dir)
             self.log("Added Profile")
             zip_path=self.donwloadFile(download_url, profile_name)
             sha=self.write_zip_checksum(zip_path=zip_path, path_folder=profile_dir)
             if sha != sha256:
                 self.saveSha256(sha=sha256,profile_name=profile_name)
+            os.rename(zip_path, os.path.join(profile_dir, f"{profile_name}.zip"))
         else:
             profile_dir = self.get_profilename_path(profile_name)
             self.doMakeFolderProfile(profile_name)

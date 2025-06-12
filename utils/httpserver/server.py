@@ -8,10 +8,12 @@ class FileHTTPRequestHandler(SimpleHTTPRequestHandler):
         filename = self.path.lstrip('/')
         if filename in self.files:
             file_path = self.files[filename]
+            file_size = os.path.getsize(file_path)
             if os.path.exists(file_path):
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/octet-stream')
                 self.send_header('Content-Disposition', f'attachment; filename="{filename}"')
+                self.send_header('Content-Length', str(file_size))
                 self.end_headers()
                 with open(file_path, 'rb') as f:
                     self.wfile.write(f.read())

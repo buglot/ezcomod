@@ -5,8 +5,9 @@ import os
 import json
 import requests
 import uuid
+import subprocess
 class MangagerProfile(ProfileMod):
-    isProcess:bool = False
+    
     def __init__(self):
         super().__init__()
 
@@ -46,7 +47,9 @@ class MangagerProfile(ProfileMod):
                 f.write("bank file")
             f.close()
     def createProfile(self, profile_name: str):
+        self.isProcess = True
         if not self.checkProfile(profile_name):
+            
             self.log(f"[{profile_name}]","Create Profile:",profile_name)
             self.add_profile(profile_name)
             self.zipfileNow(profile_name)
@@ -69,6 +72,7 @@ class MangagerProfile(ProfileMod):
             self.log(f"[{profile_name}]","Don't Have Anything Change!")  
             os.remove(zip_path)  
             self.log(f"[{profile_name}]","Delete Backup file Sucesseed!") 
+        self.isProcess =False
     def checkSha256ProfileZip(self,sha256,profile_name: str) -> bool:
         if os.path.exists(os.path.join(self.get_profilename_path(profile_name), f"data.json")):
             data = self.getSha256(profile_name)
@@ -146,6 +150,7 @@ class MangagerProfile(ProfileMod):
         pass
     
     def changeModFolder(self,profile_name):
+        self.isProcess =True
         a,b = self.checkProfilePathandZip_Exists(profile_name=profile_name)
         if a and b:
             for files in os.listdir(self.get_file_path()):
@@ -154,9 +159,22 @@ class MangagerProfile(ProfileMod):
             if self.unzipfile(profile_name=profile_name):
                 self.log("Unzip Sucessesed!!! ")
                 self.log("Now you can open The game")
+        self.isProcess =False
     def setNowProfile(self,profile_name:str):
         if self.checkProfile(profile_name=profile_name):
             self.nowProfile = profile_name
     
     def getNowProfile(self)->str:
         return self.nowProfile
+    
+    def updateNowProfile(self):
+        self.data["now"] = self.getNowProfile()
+        self.ProfileJsonWrite(self.data)
+
+    def OpenLocalMod(self):
+        self.runwindow(self.get_file_path())
+    def OpenLocalModeProfile(self,profile_name):
+        self.runwindow(self.get_profilename_path(profile_name))
+    def runwindow(self,cmd:str):
+        if os.name =="nt":
+                subprocess.run(["explorer", cmd])

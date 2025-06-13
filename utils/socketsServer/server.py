@@ -41,6 +41,8 @@ class Server:
                 thread = threading.Thread(target=self.client_socket, args=(conn, addr))
                 thread.daemon = True
                 thread.start()
+            except OSError as e:
+                break
             except Exception as e:
                 self.log("socket Error:",e)
                 

@@ -49,7 +49,6 @@ class MangagerProfile(ProfileMod):
     def createProfile(self, profile_name: str):
         self.isProcess = True
         if not self.checkProfile(profile_name):
-            
             self.log(f"[{profile_name}]","Create Profile:",profile_name)
             self.add_profile(profile_name)
             self.zipfileNow(profile_name)
@@ -62,9 +61,7 @@ class MangagerProfile(ProfileMod):
         sha256,zip_path=self.zip_task(profile_name, "backup") 
         if not self.checkSha256ProfileZip(sha256,profile_name):
             self.log(f"[{profile_name}]","Have Change!")
-            with open(os.path.join(self.get_profilename_path(profile_name), "data.json"), "w") as f:
-                json.dump({"sha256": sha256}, f, indent=4)
-                f.close()
+            self.saveSha256(sha256,profile_name)
             os.remove(os.path.join(self.get_profilename_path(profile_name), f"{profile_name}.zip"))
             os.rename(zip_path, os.path.join(self.get_profilename_path(profile_name), f"{profile_name}.zip"))  
             self.log(f"[{profile_name}]","Have Change file Sucesseed!")
@@ -79,7 +76,7 @@ class MangagerProfile(ProfileMod):
             if data == sha256:
                 return True
             else:
-                print(data,sha256)
+                print(sha256,profile_name)
                 return False
         else:
             return False

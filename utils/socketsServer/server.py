@@ -16,7 +16,7 @@ class Server:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
-        self.ddns = self.get_local_ipv4()
+        self.setDDNS(self.get_local_ipv4())
     def get_local_ipv4(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:

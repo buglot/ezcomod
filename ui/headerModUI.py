@@ -79,7 +79,7 @@ class Headerframe (Frame):
         self.httpServer.add_file(f"default.zip",self.modfile.get_zip_file_profile_path("default"))
         Button(self,text="back to main menu",command=self.back).pack(pady=5,fill="x")
     def save_ddns(self):
-        self.server.ddns = self.ddns.get()
+        self.server.setDDNS(self.ddns.get())
         self.log("Save DDNS : -> ",self.ddns.get())
     def SyncData(self):
         self.server.controller(type=TypeCommu.TYPE_SYNC)

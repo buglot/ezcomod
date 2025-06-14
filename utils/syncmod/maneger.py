@@ -155,7 +155,8 @@ class MangagerProfile(ProfileMod):
         if a and b:
             for files in os.listdir(self.get_file_path()):
                 if files != "profile" and files !="profile.json":
-                    self.deletefolder(files)
+                    print(files)
+                    self.deletefolder(os.path.join(self.get_file_path(),files))
             if self.unzipfile(profile_name=profile_name):
                 self.log("Unzip Sucessesed!!! ")
                 self.log("Now you can open The game")

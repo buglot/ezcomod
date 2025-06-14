@@ -9,6 +9,7 @@ class Server:
     sha256:str=None
     canRun :bool = True
     ddns:str ='0.0.0.0'
+    port:str|None = None
     def __init__(self, host='0.0.0.0', port=65432):
         self.host = host
         self.port = port
@@ -100,4 +101,16 @@ class Server:
         self.canRun = False
         self.server_socket.close()
     def getDownloadUrl(self):
-        return f"{self.ddns}:4000/{self.profile_name}.zip"
+        return f"{self.getDdns()}/{self.profile_name}.zip"
+    def setDDNS(self,x:str):
+        try:
+            self.ddns,self.prot = x.split(":")
+        except ValueError as e:
+            self.ddns = x.split(":")[0]
+    def getDdns(self):
+        if self.port!=None:
+            return f"{self.ddns}:{self.port}"
+        else:
+            return f"{self.ddns}:4000"
+
+            

@@ -61,7 +61,11 @@ class ProfileMod(Modfile):
                 self.data = json.load(f)
                 f.close()
             self.profile_name = self.data["profile_name"]
-            self.nowProfile = self.data["now"]
+            try:
+                self.nowProfile = self.data["now"]
+            except:
+                self.data["now"] = "default"
+                self.ProfileJsonWrite(self.data)
             self.chackNowProfile()
     def get_path_profile(self) -> str:
         return os.path.join(self.get_file_path(), "profile")

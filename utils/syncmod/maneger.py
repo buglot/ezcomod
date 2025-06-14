@@ -116,6 +116,7 @@ class MangagerProfile(ProfileMod):
             if sha != sha256:
                 self.saveSha256(sha=sha256,profile_name=profile_name)
             os.rename(zip_path, os.path.join(profile_dir, f"{profile_name}.zip"))
+            self.doUpdate()
         else:
             profile_dir = self.get_profilename_path(profile_name)
             self.doMakeFolderProfile(profile_name)
@@ -127,6 +128,7 @@ class MangagerProfile(ProfileMod):
                 os.rename(new_file, os.path.join(profile_dir, f"{profile_name}.zip"))
                 os.remove(old_file)
                 self.write_zip_checksum(self.get_zip_file_profile_path(profile_name),profile_name=profile_name)
+                self.doUpdate()
             else:
                 self.log(f"[{profile_name}]","Nothing change!")
         self.isProcess = False

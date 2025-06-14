@@ -132,6 +132,8 @@ class MangagerProfile(ProfileMod):
                 self.doUpdate()
             else:
                 self.log(f"[{profile_name}]","Nothing change!")
+                if self.nowProfile != profile_name:
+                    self.doUpdate()
         self.isProcess = False
     def perCentdownload(self,c):
         pass

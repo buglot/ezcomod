@@ -68,6 +68,9 @@ class Switch(Frame):
         self.Reload_options(-1)
     def optionmenu_callback(self,choice:str,create=0):
         self.log("Change Profile:",choice)
+        th =threading.Thread(target=self.doT,args=[choice,create])
+        th.start()
+    def doT(self,choice:str,create=0):
         if create == 0:
             self.modfile.changeModFolder(choice)
         self.modfile.setNowProfile(choice)

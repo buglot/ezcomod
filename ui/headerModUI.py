@@ -88,6 +88,9 @@ class Headerframe (Frame):
         self.log("Change Profile:",choice)
         self.server.sha256 = self.modfile.getSha256(choice)
         self.httpServer.add_file(f"{choice}.zip",self.modfile.get_zip_file_profile_path(choice))
+        th =threading.Thread(target=self.doT,args=[choice,create])
+        th.start()
+    def doT(self,choice:str,create=0):
         if create == 0:
             self.modfile.changeModFolder(choice)
         self.modfile.setNowProfile(choice)

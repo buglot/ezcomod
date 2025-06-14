@@ -79,6 +79,7 @@ class MangagerProfile(ProfileMod):
             if data == sha256:
                 return True
             else:
+                print(data,sha256)
                 return False
         else:
             return False

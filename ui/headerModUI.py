@@ -49,7 +49,7 @@ class Headerframe (Frame):
             self.labelserver.pack()
         self.var_select = StringVar()
         self.profiles = self.modfile.get_profiles()
-        self.var_select.set(self.profiles[0]) 
+        self.var_select.set(self.modfile.getNowProfile()) 
         self.box2 = Frame(self)
         self.box2.pack(fill="x")
         center_box = Frame(self.box2)
@@ -74,9 +74,9 @@ class Headerframe (Frame):
         httpsMuti.start()
         self.Syncb = Button(self,text="Sync",background="blue",fg="white",command=self.SyncData) 
         self.Syncb.pack(pady=5,fill="x")
-        self.server.profile_name = "default"
-        self.server.sha256 = self.modfile.getSha256("default")
-        self.httpServer.add_file(f"default.zip",self.modfile.get_zip_file_profile_path("default"))
+        self.server.profile_name = self.modfile.getNowProfile()
+        self.server.sha256 = self.modfile.getSha256(self.modfile.getNowProfile())
+        self.httpServer.add_file(f"{self.modfile.getNowProfile()}.zip",self.modfile.get_zip_file_profile_path(self.modfile.getNowProfile()))
         Button(self,text="back to main menu",command=self.back).pack(pady=5,fill="x")
     def save_ddns(self):
         self.server.setDDNS(self.ddns.get())

@@ -69,6 +69,7 @@ class ClientFrame(BaseFrame):
     def log(self,*x):
         self.addList(" ".join(map(str,x)))
     def doSync(self,json_data:dict):
+        self.log(json_data.get("download_url"))
         self.modfile.createProfileClient(json_data.get("sha256"),json_data.get("download_url"),json_data.get("profile_name"))
         self.modfile.changeModFolder(json_data.get("profile_name"))
         self.modfile.setNowProfile(json_data.get("profile_name"))

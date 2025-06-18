@@ -95,7 +95,6 @@ class MangagerProfile(ProfileMod):
                     per =self.dl.perCentdownload()
                     self.perCentdownload(per)
                     self.log(f"[{profile_name}] download: {per:.2f}%")
-                    time.sleep(2)
             except Exception as e:
                 self.log(f"[{profile_name}] Donwload Error:",e)
             

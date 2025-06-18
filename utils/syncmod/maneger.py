@@ -6,6 +6,8 @@ import json
 import requests
 import uuid
 import subprocess
+from utils import Downloader
+import time
 class MangagerProfile(ProfileMod):
     
     def __init__(self):
@@ -85,20 +87,15 @@ class MangagerProfile(ProfileMod):
             self.downloading()
             zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
             try:
-                response = requests.get(f"http://{download_url}", stream=True)
-                total_size = int(response.headers.get('content-length', 0))
-                self.log(f"[{profile_name}] total size :",total_size)
-                downloaded_size = 0
-                with open(zip_path, "wb") as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:
-                            f.write(chunk)
-                            downloaded_size += len(chunk)
-                            percent = (downloaded_size / total_size) * 100 if total_size else 0
-                            self.perCentdownload(percent)
-                f.close()
+                self.dl = Downloader(url=f"http://{download_url}",filename=zip_path)
+                thread = threading.Thread(target=self.dl.download)
+                thread.start()
+                while thread.is_alive():
+                    self.perCentdownload(self.dl.perCentdownload())
+                    time.sleep(1)
             except Exception as e:
                 self.log(f"[{profile_name}] Donwload Error:",e)
+            
             self.log(f"[{profile_name}] Download Mode Sucessed !!")
             self.downlaoded()
             return zip_path

@@ -1,6 +1,6 @@
 import socket
 import threading
-from utils.socketsServer.typecommu import TypeCommu
+from utils import TypeCommu
 import json
 class Server:
     ClientSocket:dict = {}

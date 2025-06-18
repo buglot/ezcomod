@@ -85,10 +85,12 @@ class MangagerProfile(ProfileMod):
     def donwloadFile(self, download_url: str, profile_name: str)->str:
             self.log(f"[{profile_name}] Download Mode ...")
             self.downloading()
+            now_start = time.time()
             zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
             try:
                 self.dl = Downloader(url=f"http://{download_url}",filename=zip_path)
                 self.dl.log =self.log
+
                 thread = threading.Thread(target=self.dl.download)
                 thread.start()
                 last_print_time = 0
@@ -103,6 +105,7 @@ class MangagerProfile(ProfileMod):
                 self.log(f"[{profile_name}] Donwload Error:",e)
             
             self.log(f"[{profile_name}] Download Mode Sucessed !!")
+            self.log(f"[{profile_name}] Download Time: {time.time()-now_start} s")
             self.downlaoded()
             return zip_path
     def createProfileClient(self, sha256, download_url, profile_name: str):

@@ -6,7 +6,7 @@ import json
 import requests
 import uuid
 import subprocess
-from utils import Downloader
+from utils import dl as Downloader
 import time
 class MangagerProfile(ProfileMod):
     

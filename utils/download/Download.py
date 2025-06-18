@@ -55,9 +55,12 @@ class Downloader:
         pass
 
     def chunk_select(self, size: int | float) -> int:
-        if size > 1048576:
-            return 262144
-        elif size > 1048576 / 1.3:
-            return 65536
+        MB = 1024 * 1024
+        if size >= 1024 * MB:         # ≥ 1GB
+            return 1048576            # 1MB
+        elif size >= 300 * MB:        # ~300MB - 1GB
+            return 262144             # 256KB
+        elif size >= 100 * MB:        # ~100MB - 300MB
+            return 65536              # 64KB
         else:
-            return 8192
+            return 8192               # 8KB

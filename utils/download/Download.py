@@ -52,7 +52,7 @@ class Downloader:
         return (total_downloaded / self.filesize) * 100
 
     def log(self, *x):
-        print(*x)
+        pass
 
     def chunk_select(self, size: int | float) -> int:
         if size > 1048576:

@@ -88,6 +88,7 @@ class MangagerProfile(ProfileMod):
             zip_path = os.path.join(self.get_profilename_path(profile_name=profile_name), f"{profile_name}_bak_{uuid.uuid1()}.zip")
             try:
                 self.dl = Downloader(url=f"http://{download_url}",filename=zip_path)
+                self.dl.log =self.log
                 thread = threading.Thread(target=self.dl.download)
                 thread.start()
                 while thread.is_alive():

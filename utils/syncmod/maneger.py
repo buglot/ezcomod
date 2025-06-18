@@ -92,8 +92,10 @@ class MangagerProfile(ProfileMod):
                 thread = threading.Thread(target=self.dl.download)
                 thread.start()
                 while thread.is_alive():
-                    self.perCentdownload(self.dl.perCentdownload())
-                    time.sleep(0.2)
+                    per =self.dl.perCentdownload()
+                    self.perCentdownload(per)
+                    self.log(f"[{profile_name}] download: {per:.2f}%")
+                    time.sleep(0.3)
             except Exception as e:
                 self.log(f"[{profile_name}] Donwload Error:",e)
             

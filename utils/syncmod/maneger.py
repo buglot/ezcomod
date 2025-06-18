@@ -90,18 +90,15 @@ class MangagerProfile(ProfileMod):
             try:
                 self.dl = Downloader(url=f"http://{download_url}",filename=zip_path)
                 self.dl.log =self.log
-
                 thread = threading.Thread(target=self.dl.download)
                 thread.start()
                 per_c = 0
                 while thread.is_alive():
                     per = self.dl.perCentdownload()
-
                     self.perCentdownload(per)
                     if int(per) % 5 ==0 and int(per)!=per_c:
                         per_c=int(per)
                         self.log(f"[{profile_name}] download: {per:.2f}%")
-                        
             except Exception as e:
                 self.log(f"[{profile_name}] Donwload Error:",e)
             

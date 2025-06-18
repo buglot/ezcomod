@@ -55,6 +55,7 @@ class FileHTTPRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         result = self.send_head()
         if result:
+            print("do_GET")
             f, start, end = result
             f.seek(start)
             remaining = end - start + 1
